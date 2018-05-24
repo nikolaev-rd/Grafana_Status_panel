@@ -28,7 +28,7 @@ const panelDefaults = {
 
 export class StatusPluginCtrl extends MetricsPanelCtrl {
 	/** @ngInject */
-	constructor($scope, $injector, $log, $filter, annotationsSrv) {
+	constructor($scope, $injector, $log, $filter, annotationsSrv, uiSegmentSrv) {
 		super($scope, $injector);
 		_.defaultsDeep(this.panel, panelDefaults);
 
@@ -42,6 +42,8 @@ export class StatusPluginCtrl extends MetricsPanelCtrl {
 		this.displayValueTypes = ['Never', 'When Alias Displayed', 'Warning / Critical', 'Critical Only'];
 		this.colorModes = ['Panel', 'Metric', 'Disabled'];
 		this.fontFormats = ['Regular', 'Bold', 'Italic'];
+		this.statusMetrics = [];
+		this.panel.statusGroups = [];
 
 		// Dates get stored as strings and will need to be converted back to a Date objects
 		_.each(this.panel.targets, (t) => {
@@ -62,6 +64,12 @@ export class StatusPluginCtrl extends MetricsPanelCtrl {
 		this.events.on('init-edit-mode', this.onInitEditMode.bind(this));
 
 		this.onColorChange = this.onColorChange.bind(this);
+
+		this.addGroupSegment = uiSegmentSrv.newPlusButton();
+
+		this.statusCrit = [];
+		this.statusWarn = [];
+		this.statusMetric = null;
 
 		this.addFilters()
 	}
@@ -234,10 +242,14 @@ export class StatusPluginCtrl extends MetricsPanelCtrl {
 
 		this.crit = [];
 		this.warn = [];
+		this.statusCrit = [];
+		this.statusWarn = [];
 		this.disabled = [];
 		this.display = [];
 		this.annotation = [];
 		this.extraMoreAlerts = null;
+
+		this.statusMetrics = [];
 
 		_.each(this.series, (s) => {
 			let target = _.find(targets, (target) => {
@@ -300,6 +312,8 @@ export class StatusPluginCtrl extends MetricsPanelCtrl {
 			else if (target.valueHandler == "Text Only") {
 				this.handleTextOnly(s, target);
 			}
+
+			this.statusMetrics.push(s.alias)
 		});
 
 		if(this.panel.isHideAlertsOnDisable && this.disabled.length > 0) {
@@ -366,7 +380,14 @@ export class StatusPluginCtrl extends MetricsPanelCtrl {
 
 		let isCritical = false;
 		let isWarning = false;
+		let isStatus = false;
 		let isCheckRanges = series.thresholds.warnIsNumber && series.thresholds.critIsNumber;
+
+		if (series.alias === this.panel.statusMetric){
+			isStatus = true;
+			this.statusMetric = series;
+		}
+
 		if (isCheckRanges) {
 			if (!series.inverted) {
 				if (series.display_value >= series.thresholds.crit) {
@@ -375,14 +396,14 @@ export class StatusPluginCtrl extends MetricsPanelCtrl {
 					isWarning = true
 				}
 			} else {
-				if (series.display_value <= series.thresholds.crit) {
+				if (series.display_value <= series.thresholds.crit && series.alias) {
 					isCritical = true
 				} else if (series.display_value <= series.thresholds.warn) {
 					isWarning = true
 				}
 			}
 		} else {
-			if (series.display_value == series.thresholds.crit) {
+			if (series.display_value == series.thresholds.crit && series.alias) {
 				isCritical = true
 			} else if (series.display_value == series.thresholds.warn) {
 				isWarning = true
@@ -400,17 +421,28 @@ export class StatusPluginCtrl extends MetricsPanelCtrl {
 			//In critical state we don't show the error as annotation
 			series.displayType = this.displayTypes[0];
 			series.isDisplayValue = displayValueWhenAliasDisplayed || displayValueFromWarning || displayValueFromCritical;
-			this.crit.push(series);
+			if(isStatus) {
+				this.statusCrit.push(series);
+			}
+			else {
+				this.crit.push(series);
+			}
 		} else if(isWarning) {
 			//In warning state we don't show the warning as annotation
 			series.displayType = this.displayTypes[0];
 			series.isDisplayValue = displayValueWhenAliasDisplayed || displayValueFromWarning;
-			this.warn.push(series);
+			if(isStatus){
+				this.statusWarn.push(series);
+			}
+			else{
+				this.warn.push(series);
+			}
 		} else if ("Always" == target.displayAliasType) {
 			series.isDisplayValue = displayValueWhenAliasDisplayed;
 			if(series.displayType == "Annotation") {
 				this.annotation.push(series);
-			} else {
+			} 
+			else {
 				this.display.push(series);
 			}
 		}
@@ -476,9 +508,9 @@ export class StatusPluginCtrl extends MetricsPanelCtrl {
 			this.panelState = 'error-state';
 		} else if (this.disabled.length > 0) {
 			this.panelState = 'disabled-state';
-		} else if (this.crit.length > 0) {
+		} else if (this.statusCrit.length > 0) {
 			this.panelState = 'error-state';
-		} else if (this.warn.length > 0) {
+		} else if (this.statusWarn.length > 0) {
 			this.panelState = 'warn-state';
 		} else if((this.series == undefined || this.series.length == 0) && this.panel.isGrayOnNoData) {
 			this.panelState = 'no-data-state';
@@ -633,6 +665,19 @@ export class StatusPluginCtrl extends MetricsPanelCtrl {
 		this.$panelContainer = elem.find('.panel-container');
 		this.$panelContainer.addClass("st-card");
 		this.$panelContoller = ctrl;
+	}
+
+	addGroup(){
+		alert('adding group with name: ' + this.panel.groupname);
+		if(this.panel.groupname){
+			alert('added!');
+			this.panel.statusGroups.push({name: this.panel.groupname});
+		}
+	}
+
+	removeGroup(group){
+		this.panel.statusGroups = _.without(this.panel.statusGroups, group);
+		this.panel.render();
 	}
 }
 

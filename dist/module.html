@@ -44,21 +44,29 @@
 						<span ng-show="display.isDisplayValue"> - {{ display.display_value | numberOrTextWithRegex : display.valueDisplayRegex }}</span>
 					</div>
 
+					<div ng-style="ctrl.panel.colorMode === 'Metric' && {'color':ctrl.panel.colors.ok}"
+						ng-class="{'boldAlertMetric': ctrl.panel.fontFormat === 'Bold', 'italicAlertMetric': ctrl.panel.fontFormat === 'Italic'}">
+						<img ng-show="ctrl.statusCrit.length === 0 && ctrl.statusWarn.length === 0 && ctrl.statusMetric" src="https://hds.static.autodesk.com/images/table-status-good.svg" alt="Good">
+						<a ng-show="ctrl.statusCrit.length === 0 && ctrl.statusWarn.length === 0 && ctrl.statusMetric" ng-href="{{ ctrl.statusMetric.url | interpolateTemplateVars:this }}" target="_blank" >{{ ctrl.statusMetric.alias }} Ok</a>
+						<img ng-show="ctrl.statusCrit.length === 0 && ctrl.statusWarn.length === 1 && ctrl.statusMetric" src="https://hds.static.autodesk.com/images/table-status-bad.svg" alt="Bad">
+						<a ng-show="ctrl.statusCrit.length === 0 && ctrl.statusWarn.length === 1 && ctrl.statusMetric" ng-href="{{ ctrl.statusMetric.url | interpolateTemplateVars:this }}" target="_blank">{{ ctrl.statusMetric.alias }} performance degraded</a>
+						<img ng-show="ctrl.statusCrit.length === 1 && ctrl.statusWarn.length === 0 && ctrl.statusMetric" src="https://hds.static.autodesk.com/images/table-status-worst.svg" alt="Down">
+						<a ng-show="ctrl.statusCrit.length === 1 && ctrl.statusWarn.length === 0 && ctrl.statusMetric" ng-href="{{ ctrl.statusMetric.url | interpolateTemplateVars:this }}" target="_blank">{{ ctrl.statusMetric.alias }} performance critical</a>
+			   		</div>
+
 					<div ng-style="ctrl.panel.colorMode === 'Metric' && {'color':ctrl.panel.colors.crit}"
-						 ng-class="{'boldAlertMetric': ctrl.panel.fontFormat === 'Bold', 'italicAlertMetric': ctrl.panel.fontFormat === 'Italic'}"
-						 ng-repeat="crit in ctrl.crit">
-						<a ng-show="crit.url" ng-href="{{ crit.url | interpolateTemplateVars:this }}" target="_blank" style="color:inherit">{{ crit.alias }}</a>
-						<span ng-hide="crit.url">{{ crit.alias }}</span>
-						<span ng-show="crit.isDisplayValue"> - {{ crit.display_value | numberOrTextWithRegex : crit.valueDisplayRegex }}</span>
-					</div>
+						ng-class="{'boldAlertMetric': ctrl.panel.fontFormat === 'Bold', 'italicAlertMetric': ctrl.panel.fontFormat === 'Italic'}">
+						<img ng-show="ctrl.crit.length > 0" alt="critical" src="https://hds.static.autodesk.com/images/table-status-worst.svg">
+						<a ng-show="ctrl.crit.length === 1" ng-href="{{ ctrl.crit[0].url | interpolateTemplateVars:this }}" target="_blank" > {{ ctrl.crit.length }} metric with performance critical</a>
+						<a ng-show="ctrl.crit.length > 1" ng-href="{{ ctrl.crit[0].url | interpolateTemplateVars:this }}" target="_blank" > {{ ctrl.crit.length }} metrics with performance critical</a>
+			   		</div>
 
 					<div ng-style="ctrl.panel.colorMode === 'Metric' && {'color':ctrl.panel.colors.warn}"
-						 ng-class="{'boldAlertMetric': ctrl.panel.fontFormat === 'Bold', 'italicAlertMetric': ctrl.panel.fontFormat === 'Italic'}"
-						 ng-repeat="warn in ctrl.warn">
-						<a ng-show="warn.url" ng-href="{{ warn.url | interpolateTemplateVars:this }}" target="_blank" style="color:inherit">{{ warn.alias }}</a>
-						<span ng-hide="warn.url">{{ warn.alias }}</span>
-						<span ng-show="warn.isDisplayValue"> - {{ warn.display_value | numberOrTextWithRegex : warn.valueDisplayRegex }}</span>
-					</div>
+						ng-class="{'boldAlertMetric': ctrl.panel.fontFormat === 'Bold', 'italicAlertMetric': ctrl.panel.fontFormat === 'Italic'}">
+						<img ng-show="ctrl.warn.length > 0" alt="degraded" src="https://hds.static.autodesk.com/images/table-status-bad.svg">
+						<a ng-show="ctrl.warn.length === 1" ng-href="{{ ctrl.warn[0].url | interpolateTemplateVars:this }}" target="_blank"> {{ ctrl.warn.length }} metric with performance degraded</a>
+						<a ng-show="ctrl.warn.length > 1" ng-href="{{ ctrl.warn[0].url | interpolateTemplateVars:this }}" target="_blank"> {{ ctrl.warn.length }} metrics with performance degraded</a>
+			   		</div>
 
 					<div ng-style="ctrl.panel.colorMode === 'Metric' && {'color':ctrl.panel.colors.disable}"
 						 ng-class="{'boldAlertMetric': ctrl.panel.fontFormat === 'Bold', 'italicAlertMetric': ctrl.panel.fontFormat === 'Italic'}"

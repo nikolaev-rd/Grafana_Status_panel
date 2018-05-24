@@ -90,7 +90,7 @@ System.register(["app/plugins/sdk", "lodash", "app/core/time_series2", "app/core
 				_inherits(StatusPluginCtrl, _MetricsPanelCtrl);
 
 				/** @ngInject */
-				function StatusPluginCtrl($scope, $injector, $log, $filter, annotationsSrv) {
+				function StatusPluginCtrl($scope, $injector, $log, $filter, annotationsSrv, uiSegmentSrv) {
 					_classCallCheck(this, StatusPluginCtrl);
 
 					var _this = _possibleConstructorReturn(this, (StatusPluginCtrl.__proto__ || Object.getPrototypeOf(StatusPluginCtrl)).call(this, $scope, $injector));
@@ -107,6 +107,8 @@ System.register(["app/plugins/sdk", "lodash", "app/core/time_series2", "app/core
 					_this.displayValueTypes = ['Never', 'When Alias Displayed', 'Warning / Critical', 'Critical Only'];
 					_this.colorModes = ['Panel', 'Metric', 'Disabled'];
 					_this.fontFormats = ['Regular', 'Bold', 'Italic'];
+					_this.statusMetrics = [];
+					_this.panel.statusGroups = [];
 
 					// Dates get stored as strings and will need to be converted back to a Date objects
 					_.each(_this.panel.targets, function (t) {
@@ -127,6 +129,12 @@ System.register(["app/plugins/sdk", "lodash", "app/core/time_series2", "app/core
 					_this.events.on('init-edit-mode', _this.onInitEditMode.bind(_this));
 
 					_this.onColorChange = _this.onColorChange.bind(_this);
+
+					_this.addGroupSegment = uiSegmentSrv.newPlusButton();
+
+					_this.statusCrit = [];
+					_this.statusWarn = [];
+					_this.statusMetric = null;
 
 					_this.addFilters();
 					return _this;
@@ -318,10 +326,14 @@ System.register(["app/plugins/sdk", "lodash", "app/core/time_series2", "app/core
 
 						this.crit = [];
 						this.warn = [];
+						this.statusCrit = [];
+						this.statusWarn = [];
 						this.disabled = [];
 						this.display = [];
 						this.annotation = [];
 						this.extraMoreAlerts = null;
+
+						this.statusMetrics = [];
 
 						_.each(this.series, function (s) {
 							var target = _.find(targets, function (target) {
@@ -386,6 +398,8 @@ System.register(["app/plugins/sdk", "lodash", "app/core/time_series2", "app/core
 							} else if (target.valueHandler == "Text Only") {
 								_this5.handleTextOnly(s, target);
 							}
+
+							_this5.statusMetrics.push(s.alias);
 						});
 
 						if (this.panel.isHideAlertsOnDisable && this.disabled.length > 0) {
@@ -455,7 +469,14 @@ System.register(["app/plugins/sdk", "lodash", "app/core/time_series2", "app/core
 
 						var isCritical = false;
 						var isWarning = false;
+						var isStatus = false;
 						var isCheckRanges = series.thresholds.warnIsNumber && series.thresholds.critIsNumber;
+
+						if (series.alias === this.panel.statusMetric) {
+							isStatus = true;
+							this.statusMetric = series;
+						}
+
 						if (isCheckRanges) {
 							if (!series.inverted) {
 								if (series.display_value >= series.thresholds.crit) {
@@ -464,14 +485,14 @@ System.register(["app/plugins/sdk", "lodash", "app/core/time_series2", "app/core
 									isWarning = true;
 								}
 							} else {
-								if (series.display_value <= series.thresholds.crit) {
+								if (series.display_value <= series.thresholds.crit && series.alias) {
 									isCritical = true;
 								} else if (series.display_value <= series.thresholds.warn) {
 									isWarning = true;
 								}
 							}
 						} else {
-							if (series.display_value == series.thresholds.crit) {
+							if (series.display_value == series.thresholds.crit && series.alias) {
 								isCritical = true;
 							} else if (series.display_value == series.thresholds.warn) {
 								isWarning = true;
@@ -489,12 +510,20 @@ System.register(["app/plugins/sdk", "lodash", "app/core/time_series2", "app/core
 							//In critical state we don't show the error as annotation
 							series.displayType = this.displayTypes[0];
 							series.isDisplayValue = displayValueWhenAliasDisplayed || displayValueFromWarning || displayValueFromCritical;
-							this.crit.push(series);
+							if (isStatus) {
+								this.statusCrit.push(series);
+							} else {
+								this.crit.push(series);
+							}
 						} else if (isWarning) {
 							//In warning state we don't show the warning as annotation
 							series.displayType = this.displayTypes[0];
 							series.isDisplayValue = displayValueWhenAliasDisplayed || displayValueFromWarning;
-							this.warn.push(series);
+							if (isStatus) {
+								this.statusWarn.push(series);
+							} else {
+								this.warn.push(series);
+							}
 						} else if ("Always" == target.displayAliasType) {
 							series.isDisplayValue = displayValueWhenAliasDisplayed;
 							if (series.displayType == "Annotation") {
@@ -570,9 +599,9 @@ System.register(["app/plugins/sdk", "lodash", "app/core/time_series2", "app/core
 							this.panelState = 'error-state';
 						} else if (this.disabled.length > 0) {
 							this.panelState = 'disabled-state';
-						} else if (this.crit.length > 0) {
+						} else if (this.statusCrit.length > 0) {
 							this.panelState = 'error-state';
-						} else if (this.warn.length > 0) {
+						} else if (this.statusWarn.length > 0) {
 							this.panelState = 'warn-state';
 						} else if ((this.series == undefined || this.series.length == 0) && this.panel.isGrayOnNoData) {
 							this.panelState = 'no-data-state';
@@ -698,6 +727,21 @@ System.register(["app/plugins/sdk", "lodash", "app/core/time_series2", "app/core
 						this.$panelContainer = elem.find('.panel-container');
 						this.$panelContainer.addClass("st-card");
 						this.$panelContoller = ctrl;
+					}
+				}, {
+					key: "addGroup",
+					value: function addGroup() {
+						alert('adding group with name: ' + this.panel.groupname);
+						if (this.panel.groupname) {
+							alert('added!');
+							this.panel.statusGroups.push({ name: this.panel.groupname });
+						}
+					}
+				}, {
+					key: "removeGroup",
+					value: function removeGroup(group) {
+						this.panel.statusGroups = _.without(this.panel.statusGroups, group);
+						this.panel.render();
 					}
 				}], [{
 					key: "parseThresholds",
