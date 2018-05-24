@@ -43,6 +43,22 @@
 			</span>
 			<input type="number" ng-model="ctrl.panel.cornerRadius" class="gf-form-input max-width-12" ng-change="ctrl.onRender()">
 		</div>
+		<div class="gf-form">
+			<span class="gf-form-label width-12">
+					Status Metric
+					<info-popover mode="right-normal">
+						The alias of the metric which will determine the status color of the entire panel.
+					</info-popover>
+				</span>
+			<div class="gf-form-select-wrapper max-width-12">
+				<select class="gf-form-input"
+						ng-init="ctrl.panel.statusMetric = (ctrl.panel.statusMetric ? ctrl.panel.statusMetric : ctrl.statusMetrics[0])"
+						ng-model="ctrl.panel.statusMetric"
+						ng-options="m for m in ctrl.statusMetrics"
+						ng-change="ctrl.onRender()"
+						required></select>
+			</div>
+		</div>
 	</div>
 
 	<!--Flip card section-->
@@ -131,6 +147,24 @@
 						label="Hide alerts in Disabled state" checked="ctrl.panel.isHideAlertsOnDisable"
 						on-change="ctrl.onRender()"></gf-form-switch>
 	</div>
+
+	<!-- Group Options (WIP) -->
+	<!-- <div class="gf-form-inline">
+		<div class="gf-form">
+			<label class="gf-form-label width-10">Groups</label>
+		</div>
+		<div class="gf-form" ng-repeat="group in ctrl.panel.statusGroups">
+			<label class="gf-form-label">
+				<i class="pointer fa fa-remove" ng-click="ctrl.removeGroup(group)"></i>
+				<span>{{ group.name }}</span>
+			</label>
+		</div>
+		<div class="gf-form" >
+			<input type="text" ng-model="ctrl.panel.groupname" class="gf-form-input max-width-12" ng-change="ctrl.onRender()">
+			<div class="gf-form" get-options="ctrl.getGroupName()" on-change="ctrl.addGroup()"></metric-segment>
+			<i class="pointer fa fa-remove" ng-click="ctrl.addGroup()"></i>
+		</div>
+	</div> -->
 </div>
 
 <div>

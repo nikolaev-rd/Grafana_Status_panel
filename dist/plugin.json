@@ -1,13 +1,13 @@
 {
   "type": "panel",
-  "name": "Status Panel",
-  "id": "vonage-status-panel",
+  "name": "Status By Group Panel",
+  "id": "blackmirror1-statusbygroup-panel",
 
   "info": {
-    "description": "Status Panel for Grafana",
+    "description": "Status By Group Panel for Grafana",
     "author": {
       "name": "Tomer Amir",
-      "url": "https://github.com/Vonage"
+      "url": "https://github.com/black-mirror-1"
     },
     "keywords": ["status", "panel"],
     "logos": {
@@ -15,7 +15,7 @@
       "large": "img/icon_status_panel.svg"
     },
     "links": [
-      {"name": "Github", "url": "https://github.com/Vonage/Grafana_Status_panel"}
+      {"name": "Github", "url": "https://github.com/black-mirror-1/Grafana_Status_panel"}
     ],
     "screenshots": [
       {"name": "Environment Snapshot", "path": "img/environment_snapshot.png"},
@@ -23,12 +23,12 @@
       {"name": "Warning State", "path": "img/warning.png"},
       {"name": "Critical State", "path": "img/error.png"}
     ],
-    "version": "1.0.8",
-    "updated": "2018-3-28"
+    "version": "1.0.0",
+    "updated": "2018-5-24"
   },
 
   "dependencies": {
-    "grafanaVersion": "3.x.x",
+    "grafanaVersion": "5.x.x",
     "plugins": [ ]
   }
 }

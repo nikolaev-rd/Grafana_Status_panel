@@ -1,7 +1,7 @@
-# Grafana Status Panel
+# Grafana Status By Group Panel
 
 This is a plugin meant to be used as a centralized view for the status of component in a glance.
-It is very similar to the Single Stat panel, but it can hold multiple values from the same data source.
+It is a fork of the [Grafana Status Panel](https://github.com/Vonage/Grafana_Status_panel/), but it can hold multiple values from the same data source and group different series, and select one metric as the high level status for the panel.
 Each value can be used to customize the panel in different ways: 
 * Mark the severity of the component
 * Mark if the component is disabled
@@ -43,47 +43,20 @@ You can also repeat the panel on a template if you have multiple instances that 
 
 ## Other Features
 
-### Remove Prefix
-The plugins has a 'Remove Prefix' field in the configuration. This field is is meant for easier renaming of the panels when you repeat them from a Grafana template.
+### Set Status Metric
+Under panel options you can select a metric from the list that will determine the status of the entire panel. The other metrics will be group based on their state and will still display but their state will not change the status of the panel. 
 
-i.e. you recognize your servers by domain, and they are all name in the following way `www.general-prefix.server.com`, and you would like to remove the prefix from the display, then you enter `www.general-prefix.` and all the panels will only display the `server.com` part.
-
-### Display Value by Regex
-When you want to display just part of the value for a specific metric in the screen, you can pass a regex in the `Value Regex` field, and if there is match, Only the first match will be displayed. Otherwise, the original value will be displayed.
-
-### Measurement URL
-Lets say that you want your user to be able to get instructions on what to do when a certain metric is at Warning or Critical levels. Just put a link in this field and the name will become clickable, and send your user to any URL you desire (like an internal wiki).
-
-### Threshold preferences
-Panel display tuning is available when metric value gets to different states (`ok` / `warning` / `critical` / `disabled`):
-1. You can change the relevant color for each state.
-2. You can configure if the color will change the panel background or the metric text.
-3. You can change the text format (`bold` / `italic`) for metric text in `warning` / `critical` / `disabled` states.
-
-### Show disable for no data
-If there is not data from any of the metrics, you can show the panel as disabled (in Grey), by checking the value `Make panel gray when no data` on the top of the options tab
-## Supported Data Sources
-Currently the plugin was tested with **influxDB** and **Graphite**. Support for other data sources could be added by demand
-
-## Release Notes
-### Upgrading Tips
-When upgrading there might be some changes in the data the plugin uses and saves, so some of the configurations you made might be removed by accident.
-To prevent this loss of configuration you should save the panel JSON of all panels you have (by exporting the panel or dashboards) and keep them somewhere safe until you made sure everything is working after the upgrade.
-
-### Version 1.0.8 - What's new?
-* Adding support for Grafana 5.0.x:
-	- Added option to auto scroll the alerts in case the text overflows the panel view
-	- Fix header padding when title is absent
+### Version 1.0.0 - What's new?
+* Adding support for status metric:
+	- Added option to choose one metric that determines the overall status of the panel.
 
 # Screenshots
 ### Panel States
-![ok](https://github.com/Vonage/Grafana_Status_panel/blob/develop/src/img/ok.png?raw=true)
-![warning](https://github.com/Vonage/Grafana_Status_panel/blob/develop/src/img/warning.png?raw=true)
-![error](https://github.com/Vonage/Grafana_Status_panel/blob/develop/src/img/error.png?raw=true)
+![ok](https://github.com/black-mirror-1/Grafana_Status_panel/blob/develop/src/img/ok.png?raw=true)
+![warning](https://github.com/black-mirror-1/Grafana_Status_panel/blob/develop/src/img/warning.png?raw=true)
+![error](https://github.com/black-mirror-1/Grafana_Status_panel/blob/develop/src/img/critical.png?raw=true)
 
-### The end result should look like this
-![Result](https://github.com/Vonage/Grafana_Status_panel/blob/develop/src/img/environment_snapshot.png?raw=true)
 
 # License
 
-See the [LICENSE](https://github.com/Vonage/Grafana_Status_panel/blob/master/LICENSE.txt) file for license rights and limitations (Apache License, Version 2.0)
+See the [LICENSE](https://github.com/black-mirror-1/Grafana_Status_panel/blob/master/LICENSE.txt) file for license rights and limitations (Apache License, Version 2.0)
