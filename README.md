@@ -77,13 +77,13 @@ To prevent this loss of configuration you should save the panel JSON of all pane
 
 # Screenshots
 ### Panel States
-![ok](https://github.com/Vonage/Grafana_Status_panel/blob/develop/src/img/ok.png?raw=true)
-![warning](https://github.com/Vonage/Grafana_Status_panel/blob/develop/src/img/warning.png?raw=true)
-![error](https://github.com/Vonage/Grafana_Status_panel/blob/develop/src/img/error.png?raw=true)
+![ok](https://github.com/black-mirror-1/Grafana_Status_panel/blob/develop/src/img/ok.png?raw=true)
+![warning](https://github.com/black-mirror-1/Grafana_Status_panel/blob/develop/src/img/warning.png?raw=true)
+![error](https://github.com/black-mirror-1/Grafana_Status_panel/blob/develop/src/img/error.png?raw=true)
 
 ### The end result should look like this
-![Result](https://github.com/Vonage/Grafana_Status_panel/blob/develop/src/img/environment_snapshot.png?raw=true)
+![Result](https://github.com/black-mirror-1/Grafana_Status_panel/blob/develop/src/img/environment_snapshot.png?raw=true)
 
 # License
 
-See the [LICENSE](https://github.com/Vonage/Grafana_Status_panel/blob/master/LICENSE.txt) file for license rights and limitations (Apache License, Version 2.0)
+See the [LICENSE](https://github.com/black-mirror-1/Grafana_Status_panel/blob/master/LICENSE.txt) file for license rights and limitations (Apache License, Version 2.0)
