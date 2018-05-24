@@ -125,6 +125,15 @@
 				<color-picker color="ctrl.panel.colors.disable" bs-tooltip="'Disabled'" onChange="ctrl.onColorChange('disable')"></color-picker>
 			</span>
 		</div>
+		<div class="gf-form">
+			<span class="gf-form-label width-9">Warning Alias</span>
+			<input type="text" ng-model="ctrl.panel.warningAlias" class="gf-form-input max-width-12" ng-change="ctrl.onRender()">
+		</div>
+
+		<div class="gf-form">
+			<span class="gf-form-label width-9">Critical Alias</span>
+			<input type="text" ng-model="ctrl.panel.criticalAlias" class="gf-form-input max-width-12" ng-change="ctrl.onRender()">
+		</div>
 	</div>
 
 	<!--Other Option-->

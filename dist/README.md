@@ -52,9 +52,9 @@ Under panel options you can select a metric from the list that will determine th
 
 # Screenshots
 ### Panel States
-![ok](https://github.com/black-mirror-1/Grafana_Status_panel/blob/develop/src/img/ok.png?raw=true)
-![warning](https://github.com/black-mirror-1/Grafana_Status_panel/blob/develop/src/img/warning.png?raw=true)
-![error](https://github.com/black-mirror-1/Grafana_Status_panel/blob/develop/src/img/critical.png?raw=true)
+![ok](https://raw.github.com/black-mirror-1/Grafana_Status_panel/master/src/img/ok.png)
+![warning](https://raw.github.com/black-mirror-1/Grafana_Status_panel/master/src/img/warning.png)
+![error](https://raw.github.com/black-mirror-1/Grafana_Status_panel/master/src/img/critical.png)
 
 
 # License
