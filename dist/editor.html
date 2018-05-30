@@ -161,18 +161,19 @@
 	<div class="section gf-form-group">
 		<h5 class="section-heading">Groups</h5>
 			<div class="gf-form" ng-repeat="group in ctrl.panel.statusGroups">
-				<label class="gf-form-label">
+				<label class="gf-form-label width-6">
 					<i class="pointer fa fa-remove" ng-click="ctrl.removeGroup(group)"></i>
 					<span>{{ group.name }}</span>
 				</label>
-				<span class="gf-form">
-						<input type="text" ng-model="group.alias" ng-init="group.alias" class="gf-form-input max-width-12" ng-change="ctrl.onRender()">
-				</span>
+				<input type="text" placeholder="Alias" ng-model="group.alias" ng-init="group.alias" class="gf-form-input max-width-12" ng-change="ctrl.onRender()">
+				<input type="text" placeholder="Drill down URL" ng-model="group.url" ng-init="group.url" class="gf-form-input max-width-12" ng-change="ctrl.onRender()">
 			</div>
 			<div class="gf-form" >
-				<input type="text" ng-model="ctrl.panel.groupname" class="gf-form-input max-width-12" ng-change="ctrl.onRender()">
-				<div class="gf-form" get-options="ctrl.getGroupName()" on-change="ctrl.addGroup()"></metric-segment>
-				<i class="pointer fa fa-remove" ng-click="ctrl.addGroup()"></i>
+				<input type="text" ng-model="ctrl.panel.groupname" class="gf-form-input max-width-10" ng-change="ctrl.onRender()">
+				<button class="btn btn-inverse" ng-click="ctrl.addGroup()">
+					<i class="fa fa-plus"></i>
+					<span>Add Group</span>
+				</button>
 			</div>
 	</div>
 </div>
@@ -248,14 +249,14 @@
 				<span class="gf-form-label width-12">
 				  Group
 				  <info-popover mode="right-normal">
-					Choose the group the metric belongs to.
+					Choose the group the metric belongs to. {{ measurement.group }}
 				  </info-popover>
 				</span>
 				<div class="gf-form-select-wrapper max-width-12">
 					<select class="gf-form-input"
 							ng-init="measurement.group = (measurement.group ? measurement.group : ctrl.panel.statusGroups[0])"
 							ng-model="measurement.group"
-							ng-options="g.name for g in ctrl.panel.statusGroups"
+							ng-options="g.name for g in ctrl.panel.statusGroups track by g.name"
 							ng-change="ctrl.onRender()"
 							required></select>
 				</div>

@@ -251,10 +251,12 @@ export class StatusPluginCtrl extends MetricsPanelCtrl {
 		this.groupCrit = {};
 		this.groupWarn = {};
 
-		this.panel.statusGroups.forEach(element => {
-			this.groupCrit[element.name] = [];
-			this.groupWarn[element.name] = [];
-		});
+		if(this.panel.statusGroups){
+			this.panel.statusGroups.forEach(element => {
+				this.groupCrit[element.name] = [];
+				this.groupWarn[element.name] = [];
+			});
+		}
 
 		_.each(this.series, (s) => {
 			let target = _.find(targets, (target) => {
@@ -436,7 +438,9 @@ export class StatusPluginCtrl extends MetricsPanelCtrl {
 			}
 			else {
 				this.crit.push(series);
-				this.groupCrit[series.group.name].push(series);
+				if(series.group.name) {
+					this.groupCrit[series.group.name].push(series);
+				}
 			}
 		} else if(isWarning) {
 			//In warning state we don't show the warning as annotation
@@ -447,7 +451,9 @@ export class StatusPluginCtrl extends MetricsPanelCtrl {
 			}
 			else{
 				this.warn.push(series);
-				this.groupWarn[series.group.name].push(series);
+				if(series.group.name) {
+					this.groupWarn[series.group.name].push(series);
+				}
 			}
 		} else if ("Always" == target.displayAliasType) {
 			series.isDisplayValue = displayValueWhenAliasDisplayed;
@@ -682,10 +688,11 @@ export class StatusPluginCtrl extends MetricsPanelCtrl {
 	}
 
 	addGroup(){
-		alert('adding group with name: ' + this.panel.groupname);
 		if(this.panel.groupname){
-			alert('added!');
-			this.panel.statusGroups.push({name: this.panel.groupname, alias: 'test'});
+			if(!this.panel.statusGroups) {
+				this.panel.statusGroups = [];
+			}
+			this.panel.statusGroups.push({name: this.panel.groupname, alias: '', url: ''});
 			this.panel.groupname = ''
 		}
 	}

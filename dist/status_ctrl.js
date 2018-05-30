@@ -335,10 +335,12 @@ System.register(["app/plugins/sdk", "lodash", "app/core/time_series2", "app/core
 						this.groupCrit = {};
 						this.groupWarn = {};
 
-						this.panel.statusGroups.forEach(function (element) {
-							_this5.groupCrit[element.name] = [];
-							_this5.groupWarn[element.name] = [];
-						});
+						if (this.panel.statusGroups) {
+							this.panel.statusGroups.forEach(function (element) {
+								_this5.groupCrit[element.name] = [];
+								_this5.groupWarn[element.name] = [];
+							});
+						}
 
 						_.each(this.series, function (s) {
 							var target = _.find(targets, function (target) {
@@ -524,7 +526,9 @@ System.register(["app/plugins/sdk", "lodash", "app/core/time_series2", "app/core
 								this.statusCrit.push(series);
 							} else {
 								this.crit.push(series);
-								this.groupCrit[series.group.name].push(series);
+								if (series.group.name) {
+									this.groupCrit[series.group.name].push(series);
+								}
 							}
 						} else if (isWarning) {
 							//In warning state we don't show the warning as annotation
@@ -534,7 +538,9 @@ System.register(["app/plugins/sdk", "lodash", "app/core/time_series2", "app/core
 								this.statusWarn.push(series);
 							} else {
 								this.warn.push(series);
-								this.groupWarn[series.group.name].push(series);
+								if (series.group.name) {
+									this.groupWarn[series.group.name].push(series);
+								}
 							}
 						} else if ("Always" == target.displayAliasType) {
 							series.isDisplayValue = displayValueWhenAliasDisplayed;
@@ -745,10 +751,11 @@ System.register(["app/plugins/sdk", "lodash", "app/core/time_series2", "app/core
 				}, {
 					key: "addGroup",
 					value: function addGroup() {
-						alert('adding group with name: ' + this.panel.groupname);
 						if (this.panel.groupname) {
-							alert('added!');
-							this.panel.statusGroups.push({ name: this.panel.groupname, alias: 'test' });
+							if (!this.panel.statusGroups) {
+								this.panel.statusGroups = [];
+							}
+							this.panel.statusGroups.push({ name: this.panel.groupname, alias: '', url: '' });
 							this.panel.groupname = '';
 						}
 					}
