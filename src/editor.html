@@ -158,22 +158,23 @@
 	</div>
 
 	<!-- Group Options (WIP) -->
-	<!-- <div class="gf-form-inline">
-		<div class="gf-form">
-			<label class="gf-form-label width-10">Groups</label>
-		</div>
-		<div class="gf-form" ng-repeat="group in ctrl.panel.statusGroups">
-			<label class="gf-form-label">
-				<i class="pointer fa fa-remove" ng-click="ctrl.removeGroup(group)"></i>
-				<span>{{ group.name }}</span>
-			</label>
-		</div>
-		<div class="gf-form" >
-			<input type="text" ng-model="ctrl.panel.groupname" class="gf-form-input max-width-12" ng-change="ctrl.onRender()">
-			<div class="gf-form" get-options="ctrl.getGroupName()" on-change="ctrl.addGroup()"></metric-segment>
-			<i class="pointer fa fa-remove" ng-click="ctrl.addGroup()"></i>
-		</div>
-	</div> -->
+	<div class="section gf-form-group">
+		<h5 class="section-heading">Groups</h5>
+			<div class="gf-form" ng-repeat="group in ctrl.panel.statusGroups">
+				<label class="gf-form-label">
+					<i class="pointer fa fa-remove" ng-click="ctrl.removeGroup(group)"></i>
+					<span>{{ group.name }}</span>
+				</label>
+				<span class="gf-form">
+						<input type="text" ng-model="group.alias" ng-init="group.alias" class="gf-form-input max-width-12" ng-change="ctrl.onRender()">
+				</span>
+			</div>
+			<div class="gf-form" >
+				<input type="text" ng-model="ctrl.panel.groupname" class="gf-form-input max-width-12" ng-change="ctrl.onRender()">
+				<div class="gf-form" get-options="ctrl.getGroupName()" on-change="ctrl.addGroup()"></metric-segment>
+				<i class="pointer fa fa-remove" ng-click="ctrl.addGroup()"></i>
+			</div>
+	</div>
 </div>
 
 <div>
@@ -183,7 +184,7 @@
 		<h5 class="section-heading" ng-if="measurement.alias">{{ measurement.alias }}</h5>
 		<div ng-if="!measurement.alias">
 			<h5 class="section-heading">Metric: {{ measurement.refId }}</h5>
-			<div>Please enter an alias for this measurement bellow</div>
+			<div>Please enter an alias for this measurement below</div>
 		</div>
 
 		<!--Display Settings-->
@@ -241,6 +242,25 @@
 				</span>
 				<input type="text" name="url" ng-model="measurement.url" class="gf-form-input" style="width: 300px" ng-change="ctrl.onRender()" />
 			</div>
+
+			<!--Group-->
+			<div class="gf-form">
+				<span class="gf-form-label width-12">
+				  Group
+				  <info-popover mode="right-normal">
+					Choose the group the metric belongs to.
+				  </info-popover>
+				</span>
+				<div class="gf-form-select-wrapper max-width-12">
+					<select class="gf-form-input"
+							ng-init="measurement.group = (measurement.group ? measurement.group : ctrl.panel.statusGroups[0])"
+							ng-model="measurement.group"
+							ng-options="g.name for g in ctrl.panel.statusGroups"
+							ng-change="ctrl.onRender()"
+							required></select>
+				</div>
+			</div>
+
 		</div>
 
 		<div class="section gf-form-group">

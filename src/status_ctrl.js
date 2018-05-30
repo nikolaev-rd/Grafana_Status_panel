@@ -43,7 +43,7 @@ export class StatusPluginCtrl extends MetricsPanelCtrl {
 		this.colorModes = ['Panel', 'Metric', 'Disabled'];
 		this.fontFormats = ['Regular', 'Bold', 'Italic'];
 		this.statusMetrics = [];
-		this.panel.statusGroups = [];
+		// this.panel.statusGroups = [];
 
 		// Dates get stored as strings and will need to be converted back to a Date objects
 		_.each(this.panel.targets, (t) => {
@@ -64,8 +64,6 @@ export class StatusPluginCtrl extends MetricsPanelCtrl {
 		this.events.on('init-edit-mode', this.onInitEditMode.bind(this));
 
 		this.onColorChange = this.onColorChange.bind(this);
-
-		this.addGroupSegment = uiSegmentSrv.newPlusButton();
 
 		this.statusCrit = [];
 		this.statusWarn = [];
@@ -250,6 +248,13 @@ export class StatusPluginCtrl extends MetricsPanelCtrl {
 		this.extraMoreAlerts = null;
 
 		this.statusMetrics = [];
+		this.groupCrit = {};
+		this.groupWarn = {};
+
+		this.panel.statusGroups.forEach(element => {
+			this.groupCrit[element.name] = [];
+			this.groupWarn[element.name] = [];
+		});
 
 		_.each(this.series, (s) => {
 			let target = _.find(targets, (target) => {
@@ -265,6 +270,7 @@ export class StatusPluginCtrl extends MetricsPanelCtrl {
 			s.isDisplayValue = true;
 			s.displayType = target.displayType;
 			s.valueDisplayRegex = "";
+			s.group = target.group;
 
 			if(this.validateRegex(target.valueDisplayRegex)) {
 				s.valueDisplayRegex = target.valueDisplayRegex;
@@ -319,6 +325,8 @@ export class StatusPluginCtrl extends MetricsPanelCtrl {
 		if(this.panel.isHideAlertsOnDisable && this.disabled.length > 0) {
 			this.crit = [];
 			this.warn = [];
+			this.groupCrit = {};
+			this.groupWarn = {};
 			this.display = [];
 		}
 
@@ -383,6 +391,8 @@ export class StatusPluginCtrl extends MetricsPanelCtrl {
 		let isStatus = false;
 		let isCheckRanges = series.thresholds.warnIsNumber && series.thresholds.critIsNumber;
 
+		// alert(series.alias);
+
 		if (series.alias === this.panel.statusMetric){
 			isStatus = true;
 			this.statusMetric = series;
@@ -426,6 +436,7 @@ export class StatusPluginCtrl extends MetricsPanelCtrl {
 			}
 			else {
 				this.crit.push(series);
+				this.groupCrit[series.group.name].push(series);
 			}
 		} else if(isWarning) {
 			//In warning state we don't show the warning as annotation
@@ -436,6 +447,7 @@ export class StatusPluginCtrl extends MetricsPanelCtrl {
 			}
 			else{
 				this.warn.push(series);
+				this.groupWarn[series.group.name].push(series);
 			}
 		} else if ("Always" == target.displayAliasType) {
 			series.isDisplayValue = displayValueWhenAliasDisplayed;
@@ -635,6 +647,8 @@ export class StatusPluginCtrl extends MetricsPanelCtrl {
 	onDataError() {
 		this.crit = [];
 		this.warn = [];
+		this.groupCrit = {};
+		this.groupWarn = {};
 	}
 
 	static seriesHandler(seriesData) {
@@ -671,7 +685,8 @@ export class StatusPluginCtrl extends MetricsPanelCtrl {
 		alert('adding group with name: ' + this.panel.groupname);
 		if(this.panel.groupname){
 			alert('added!');
-			this.panel.statusGroups.push({name: this.panel.groupname});
+			this.panel.statusGroups.push({name: this.panel.groupname, alias: 'test'});
+			this.panel.groupname = ''
 		}
 	}
 

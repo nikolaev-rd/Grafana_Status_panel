@@ -108,7 +108,7 @@ System.register(["app/plugins/sdk", "lodash", "app/core/time_series2", "app/core
 					_this.colorModes = ['Panel', 'Metric', 'Disabled'];
 					_this.fontFormats = ['Regular', 'Bold', 'Italic'];
 					_this.statusMetrics = [];
-					_this.panel.statusGroups = [];
+					// this.panel.statusGroups = [];
 
 					// Dates get stored as strings and will need to be converted back to a Date objects
 					_.each(_this.panel.targets, function (t) {
@@ -129,8 +129,6 @@ System.register(["app/plugins/sdk", "lodash", "app/core/time_series2", "app/core
 					_this.events.on('init-edit-mode', _this.onInitEditMode.bind(_this));
 
 					_this.onColorChange = _this.onColorChange.bind(_this);
-
-					_this.addGroupSegment = uiSegmentSrv.newPlusButton();
 
 					_this.statusCrit = [];
 					_this.statusWarn = [];
@@ -334,6 +332,13 @@ System.register(["app/plugins/sdk", "lodash", "app/core/time_series2", "app/core
 						this.extraMoreAlerts = null;
 
 						this.statusMetrics = [];
+						this.groupCrit = {};
+						this.groupWarn = {};
+
+						this.panel.statusGroups.forEach(function (element) {
+							_this5.groupCrit[element.name] = [];
+							_this5.groupWarn[element.name] = [];
+						});
 
 						_.each(this.series, function (s) {
 							var target = _.find(targets, function (target) {
@@ -349,6 +354,7 @@ System.register(["app/plugins/sdk", "lodash", "app/core/time_series2", "app/core
 							s.isDisplayValue = true;
 							s.displayType = target.displayType;
 							s.valueDisplayRegex = "";
+							s.group = target.group;
 
 							if (_this5.validateRegex(target.valueDisplayRegex)) {
 								s.valueDisplayRegex = target.valueDisplayRegex;
@@ -405,6 +411,8 @@ System.register(["app/plugins/sdk", "lodash", "app/core/time_series2", "app/core
 						if (this.panel.isHideAlertsOnDisable && this.disabled.length > 0) {
 							this.crit = [];
 							this.warn = [];
+							this.groupCrit = {};
+							this.groupWarn = {};
 							this.display = [];
 						}
 
@@ -472,6 +480,8 @@ System.register(["app/plugins/sdk", "lodash", "app/core/time_series2", "app/core
 						var isStatus = false;
 						var isCheckRanges = series.thresholds.warnIsNumber && series.thresholds.critIsNumber;
 
+						// alert(series.alias);
+
 						if (series.alias === this.panel.statusMetric) {
 							isStatus = true;
 							this.statusMetric = series;
@@ -514,6 +524,7 @@ System.register(["app/plugins/sdk", "lodash", "app/core/time_series2", "app/core
 								this.statusCrit.push(series);
 							} else {
 								this.crit.push(series);
+								this.groupCrit[series.group.name].push(series);
 							}
 						} else if (isWarning) {
 							//In warning state we don't show the warning as annotation
@@ -523,6 +534,7 @@ System.register(["app/plugins/sdk", "lodash", "app/core/time_series2", "app/core
 								this.statusWarn.push(series);
 							} else {
 								this.warn.push(series);
+								this.groupWarn[series.group.name].push(series);
 							}
 						} else if ("Always" == target.displayAliasType) {
 							series.isDisplayValue = displayValueWhenAliasDisplayed;
@@ -703,6 +715,8 @@ System.register(["app/plugins/sdk", "lodash", "app/core/time_series2", "app/core
 					value: function onDataError() {
 						this.crit = [];
 						this.warn = [];
+						this.groupCrit = {};
+						this.groupWarn = {};
 					}
 				}, {
 					key: "$onDestroy",
@@ -734,7 +748,8 @@ System.register(["app/plugins/sdk", "lodash", "app/core/time_series2", "app/core
 						alert('adding group with name: ' + this.panel.groupname);
 						if (this.panel.groupname) {
 							alert('added!');
-							this.panel.statusGroups.push({ name: this.panel.groupname });
+							this.panel.statusGroups.push({ name: this.panel.groupname, alias: 'test' });
+							this.panel.groupname = '';
 						}
 					}
 				}, {
