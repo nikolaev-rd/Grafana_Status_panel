@@ -272,7 +272,14 @@ export class StatusPluginCtrl extends MetricsPanelCtrl {
 			s.isDisplayValue = true;
 			s.displayType = target.displayType;
 			s.valueDisplayRegex = "";
-			s.group = target.group;
+			if(this.panel.statusGroups){
+				this.panel.statusGroups.forEach(element => {
+					if(element.name === target.group.name){
+						s.group = element;
+					}
+				});
+			}
+			// s.group = target.group;
 
 			if(this.validateRegex(target.valueDisplayRegex)) {
 				s.valueDisplayRegex = target.valueDisplayRegex;
@@ -438,7 +445,7 @@ export class StatusPluginCtrl extends MetricsPanelCtrl {
 			}
 			else {
 				this.crit.push(series);
-				if(series.group.name) {
+				if(series.hasOwnProperty('group')) {
 					this.groupCrit[series.group.name].push(series);
 				}
 			}
@@ -451,7 +458,7 @@ export class StatusPluginCtrl extends MetricsPanelCtrl {
 			}
 			else{
 				this.warn.push(series);
-				if(series.group.name) {
+				if(series.hasOwnProperty('group')) {
 					this.groupWarn[series.group.name].push(series);
 				}
 			}
@@ -695,11 +702,16 @@ export class StatusPluginCtrl extends MetricsPanelCtrl {
 			this.panel.statusGroups.push({name: this.panel.groupname, alias: '', url: ''});
 			this.panel.groupname = ''
 		}
+		this.panel.render();
 	}
 
 	removeGroup(group){
 		this.panel.statusGroups = _.without(this.panel.statusGroups, group);
 		this.panel.render();
+	}
+
+	formatAlias(text, token){
+		return text.replace('{}', token);
 	}
 }
 

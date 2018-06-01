@@ -356,7 +356,14 @@ System.register(["app/plugins/sdk", "lodash", "app/core/time_series2", "app/core
 							s.isDisplayValue = true;
 							s.displayType = target.displayType;
 							s.valueDisplayRegex = "";
-							s.group = target.group;
+							if (_this5.panel.statusGroups) {
+								_this5.panel.statusGroups.forEach(function (element) {
+									if (element.name === target.group.name) {
+										s.group = element;
+									}
+								});
+							}
+							// s.group = target.group;
 
 							if (_this5.validateRegex(target.valueDisplayRegex)) {
 								s.valueDisplayRegex = target.valueDisplayRegex;
@@ -526,7 +533,7 @@ System.register(["app/plugins/sdk", "lodash", "app/core/time_series2", "app/core
 								this.statusCrit.push(series);
 							} else {
 								this.crit.push(series);
-								if (series.group.name) {
+								if (series.hasOwnProperty('group')) {
 									this.groupCrit[series.group.name].push(series);
 								}
 							}
@@ -538,7 +545,7 @@ System.register(["app/plugins/sdk", "lodash", "app/core/time_series2", "app/core
 								this.statusWarn.push(series);
 							} else {
 								this.warn.push(series);
-								if (series.group.name) {
+								if (series.hasOwnProperty('group')) {
 									this.groupWarn[series.group.name].push(series);
 								}
 							}
@@ -758,12 +765,18 @@ System.register(["app/plugins/sdk", "lodash", "app/core/time_series2", "app/core
 							this.panel.statusGroups.push({ name: this.panel.groupname, alias: '', url: '' });
 							this.panel.groupname = '';
 						}
+						this.panel.render();
 					}
 				}, {
 					key: "removeGroup",
 					value: function removeGroup(group) {
 						this.panel.statusGroups = _.without(this.panel.statusGroups, group);
 						this.panel.render();
+					}
+				}, {
+					key: "formatAlias",
+					value: function formatAlias(text, token) {
+						return text.replace('{}', token);
 					}
 				}], [{
 					key: "parseThresholds",
