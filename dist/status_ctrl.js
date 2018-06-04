@@ -110,6 +110,12 @@ System.register(["app/plugins/sdk", "lodash", "app/core/time_series2", "app/core
 					_this.statusMetrics = [];
 					// this.panel.statusGroups = [];
 
+					//Push the default status check group
+					if (!_this.panel.statusGroups) {
+						_this.panel.statusGroups = [];
+						_this.panel.statusGroups.unshift({ name: 'Status Checks', alias: '', url: '' });
+					}
+
 					// Dates get stored as strings and will need to be converted back to a Date objects
 					_.each(_this.panel.targets, function (t) {
 						if (t.valueHandler === "Date Threshold") {
@@ -336,10 +342,17 @@ System.register(["app/plugins/sdk", "lodash", "app/core/time_series2", "app/core
 						this.groupWarn = {};
 
 						if (this.panel.statusGroups) {
+							var statusGroupExists = false;
 							this.panel.statusGroups.forEach(function (element) {
 								_this5.groupCrit[element.name] = [];
 								_this5.groupWarn[element.name] = [];
+								if (element.name === 'Status Checks') {
+									statusGroupExists = true;
+								}
 							});
+							if (!statusGroupExists) {
+								this.panel.statusGroups.unshift({ name: 'Status Checks', alias: '', url: '' });
+							}
 						}
 
 						_.each(this.series, function (s) {
@@ -358,7 +371,7 @@ System.register(["app/plugins/sdk", "lodash", "app/core/time_series2", "app/core
 							s.valueDisplayRegex = "";
 							if (_this5.panel.statusGroups) {
 								_this5.panel.statusGroups.forEach(function (element) {
-									if (element.name === target.group.name) {
+									if (target.hasOwnProperty('group') && element.name === target.group.name) {
 										s.group = element;
 									}
 								});
@@ -414,7 +427,7 @@ System.register(["app/plugins/sdk", "lodash", "app/core/time_series2", "app/core
 								_this5.handleTextOnly(s, target);
 							}
 
-							_this5.statusMetrics.push(s.alias);
+							// this.statusMetrics.push(s.alias)
 						});
 
 						if (this.panel.isHideAlertsOnDisable && this.disabled.length > 0) {
@@ -491,9 +504,9 @@ System.register(["app/plugins/sdk", "lodash", "app/core/time_series2", "app/core
 
 						// alert(series.alias);
 
-						if (series.alias === this.panel.statusMetric) {
+						if (series.hasOwnProperty('group') && series.group === this.panel.statusGroups[0]) {
 							isStatus = true;
-							this.statusMetric = series;
+							// this.statusMetrics.push(series);
 						}
 
 						if (isCheckRanges) {
@@ -556,6 +569,8 @@ System.register(["app/plugins/sdk", "lodash", "app/core/time_series2", "app/core
 							} else {
 								this.display.push(series);
 							}
+						} else if (isStatus) {
+							this.statusMetrics.push(series);
 						}
 					}
 				}, {
@@ -758,20 +773,27 @@ System.register(["app/plugins/sdk", "lodash", "app/core/time_series2", "app/core
 				}, {
 					key: "addGroup",
 					value: function addGroup() {
+						var _this9 = this;
+
 						if (this.panel.groupname) {
-							if (!this.panel.statusGroups) {
-								this.panel.statusGroups = [];
+							var duplicate = false;
+							this.panel.statusGroups.forEach(function (element) {
+								if (element.name === _this9.panel.groupname) {
+									duplicate = true;
+								}
+							});
+							if (!duplicate) {
+								this.panel.statusGroups.push({ name: this.panel.groupname, alias: '', url: '' });
+								this.panel.groupname = '';
 							}
-							this.panel.statusGroups.push({ name: this.panel.groupname, alias: '', url: '' });
-							this.panel.groupname = '';
 						}
-						this.panel.render();
+						this.render();
 					}
 				}, {
 					key: "removeGroup",
 					value: function removeGroup(group) {
 						this.panel.statusGroups = _.without(this.panel.statusGroups, group);
-						this.panel.render();
+						this.render();
 					}
 				}, {
 					key: "formatAlias",

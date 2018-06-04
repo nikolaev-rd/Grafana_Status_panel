@@ -43,7 +43,12 @@ export class StatusPluginCtrl extends MetricsPanelCtrl {
 		this.colorModes = ['Panel', 'Metric', 'Disabled'];
 		this.fontFormats = ['Regular', 'Bold', 'Italic'];
 		this.statusMetrics = [];
-		// this.panel.statusGroups = [];
+
+		//Push the default status check group
+		if(!this.panel.statusGroups) {
+			this.panel.statusGroups = [];
+			this.panel.statusGroups.unshift({name: 'Status Checks', alias: '', url: ''});
+		}
 
 		// Dates get stored as strings and will need to be converted back to a Date objects
 		_.each(this.panel.targets, (t) => {
@@ -252,10 +257,17 @@ export class StatusPluginCtrl extends MetricsPanelCtrl {
 		this.groupWarn = {};
 
 		if(this.panel.statusGroups){
+			var statusGroupExists = false;
 			this.panel.statusGroups.forEach(element => {
 				this.groupCrit[element.name] = [];
 				this.groupWarn[element.name] = [];
+				if(element.name === 'Status Checks'){
+					statusGroupExists = true;
+				}
 			});
+			if(!statusGroupExists){
+				this.panel.statusGroups.unshift({name: 'Status Checks', alias: '', url: ''})
+			}
 		}
 
 		_.each(this.series, (s) => {
@@ -274,7 +286,7 @@ export class StatusPluginCtrl extends MetricsPanelCtrl {
 			s.valueDisplayRegex = "";
 			if(this.panel.statusGroups){
 				this.panel.statusGroups.forEach(element => {
-					if(element.name === target.group.name){
+					if(target.hasOwnProperty('group') && element.name === target.group.name){
 						s.group = element;
 					}
 				});
@@ -328,7 +340,7 @@ export class StatusPluginCtrl extends MetricsPanelCtrl {
 				this.handleTextOnly(s, target);
 			}
 
-			this.statusMetrics.push(s.alias)
+			// this.statusMetrics.push(s.alias)
 		});
 
 		if(this.panel.isHideAlertsOnDisable && this.disabled.length > 0) {
@@ -402,9 +414,9 @@ export class StatusPluginCtrl extends MetricsPanelCtrl {
 
 		// alert(series.alias);
 
-		if (series.alias === this.panel.statusMetric){
+		if (series.hasOwnProperty('group') && series.group === this.panel.statusGroups[0]){
 			isStatus = true;
-			this.statusMetric = series;
+			// this.statusMetrics.push(series);
 		}
 
 		if (isCheckRanges) {
@@ -470,6 +482,8 @@ export class StatusPluginCtrl extends MetricsPanelCtrl {
 			else {
 				this.display.push(series);
 			}
+		} else if(isStatus){
+			this.statusMetrics.push(series);
 		}
 	}
 
@@ -696,18 +710,23 @@ export class StatusPluginCtrl extends MetricsPanelCtrl {
 
 	addGroup(){
 		if(this.panel.groupname){
-			if(!this.panel.statusGroups) {
-				this.panel.statusGroups = [];
+			var duplicate = false;
+			this.panel.statusGroups.forEach(element => {
+				if(element.name === this.panel.groupname){
+					duplicate = true;
+				}
+			});
+			if(!duplicate){
+				this.panel.statusGroups.push({name: this.panel.groupname, alias: '', url: ''});
+				this.panel.groupname = '';
 			}
-			this.panel.statusGroups.push({name: this.panel.groupname, alias: '', url: ''});
-			this.panel.groupname = ''
 		}
-		this.panel.render();
+		this.render();
 	}
 
 	removeGroup(group){
 		this.panel.statusGroups = _.without(this.panel.statusGroups, group);
-		this.panel.render();
+		this.render();
 	}
 
 	formatAlias(text, token){

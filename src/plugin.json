@@ -6,7 +6,7 @@
   "info": {
     "description": "Status By Group Panel for Grafana",
     "author": {
-      "name": "Tomer Amir",
+      "name": "Sandeep",
       "url": "https://github.com/black-mirror-1"
     },
     "keywords": ["status", "panel"],
@@ -18,13 +18,12 @@
       {"name": "Github", "url": "https://github.com/black-mirror-1/Grafana_Status_panel"}
     ],
     "screenshots": [
-      {"name": "Environment Snapshot", "path": "img/environment_snapshot.png"},
       {"name": "Ok State", "path": "img/ok.png"},
       {"name": "Warning State", "path": "img/warning.png"},
       {"name": "Critical State", "path": "img/error.png"}
     ],
-    "version": "1.0.0",
-    "updated": "2018-5-24"
+    "version": "1.1.0",
+    "updated": "2018-6-05"
   },
 
   "dependencies": {

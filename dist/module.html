@@ -43,21 +43,27 @@
 						<span ng-hide="display.url">{{ display.alias }}</span>
 						<span ng-show="display.isDisplayValue"> - {{ display.display_value | numberOrTextWithRegex : display.valueDisplayRegex }}</span>
 					</div>
+					   
+					<div ng-style="ctrl.panel.colorMode === 'Metric' && {'color':ctrl.panel.colors.ok}"
+						ng-class="{'boldAlertMetric': ctrl.panel.fontFormat === 'Bold', 'italicAlertMetric': ctrl.panel.fontFormat === 'Italic'} " ng-if="ctrl.statusCrit.length > 0">
+						<img src="https://hds.static.autodesk.com/images/table-status-worst.svg" alt="Critical">
+						<a ng-if="ctrl.statusCrit[0].group.alias" ng-href="{{ ctrl.statusCrit[0].group.url | interpolateTemplateVars:this }}" target="_blank" >{{ ctrl.formatAlias(ctrl.statusCrit[0].group.alias, ctrl.statusCrit.length) }}</a>
+						<a ng-if="!ctrl.statusCrit[0].group.alias" ng-href="{{ ctrl.statusCrit[0].group.url | interpolateTemplateVars:this }}" target="_blank" >{{ ctrl.statusCrit.length }} {{ctrl.statusCrit[0].group.name}} critical</a>
+					</div>
 
 					<div ng-style="ctrl.panel.colorMode === 'Metric' && {'color':ctrl.panel.colors.ok}"
-						ng-class="{'boldAlertMetric': ctrl.panel.fontFormat === 'Bold', 'italicAlertMetric': ctrl.panel.fontFormat === 'Italic'}">
-						<img ng-show="ctrl.statusCrit.length === 0 && ctrl.statusWarn.length === 0 && ctrl.statusMetric" src="https://hds.static.autodesk.com/images/table-status-good.svg" alt="Good">
-						<a ng-show="ctrl.statusCrit.length === 0 && ctrl.statusWarn.length === 0 && ctrl.statusMetric" ng-href="{{ ctrl.statusMetric.url | interpolateTemplateVars:this }}" target="_blank" >{{ ctrl.statusMetric.alias }} Ok</a>
-						<img ng-show="ctrl.statusCrit.length === 0 && ctrl.statusWarn.length === 1 && ctrl.statusMetric" src="https://hds.static.autodesk.com/images/table-status-bad.svg" alt="Bad">
-						<a ng-show="ctrl.statusCrit.length === 0 && ctrl.statusWarn.length === 1 && ctrl.statusMetric" ng-href="{{ ctrl.statusMetric.url | interpolateTemplateVars:this }}" target="_blank">Warning: {{ ctrl.statusMetric.alias }}</a>
-						<img ng-show="ctrl.statusCrit.length === 1 && ctrl.statusWarn.length === 0 && ctrl.statusMetric" src="https://hds.static.autodesk.com/images/table-status-worst.svg" alt="Down">
-						<a ng-show="ctrl.statusCrit.length === 1 && ctrl.statusWarn.length === 0 && ctrl.statusMetric" ng-href="{{ ctrl.statusMetric.url | interpolateTemplateVars:this }}" target="_blank">Critical: {{ ctrl.statusMetric.alias }}</a>
-			   		</div>
+						ng-class="{'boldAlertMetric': ctrl.panel.fontFormat === 'Bold', 'italicAlertMetric': ctrl.panel.fontFormat === 'Italic'} " ng-if="ctrl.statusWarn.length > 0">
+						<img src="https://hds.static.autodesk.com/images/table-status-bad.svg" alt="Warning">
+						<a ng-if="ctrl.statusWarn[0].group.alias" ng-href="{{ ctrl.statusWarn[0].group.url | interpolateTemplateVars:this }}" target="_blank" >{{ ctrl.formatAlias(ctrl.statusWarn[0].group.alias, ctrl.statusWarn.length) }}</a>
+						<a ng-if="!ctrl.statusWarn[0].group.alias" ng-href="{{ ctrl.statusWarn[0].group.url | interpolateTemplateVars:this }}" target="_blank" >{{ ctrl.statusWarn.length }} {{ ctrl.statusWarn[0].group.name }} degraded</a>
+					</div>
 
-
-					<!-- <div ng-repeat="(group, metric) in ctrl.groupCrit">
-						<span>{{ metric.length }} : {{ group }}</span>
-					</div> -->
+					<div ng-style="ctrl.panel.colorMode === 'Metric' && {'color':ctrl.panel.colors.ok}"
+					   ng-class="{'boldAlertMetric': ctrl.panel.fontFormat === 'Bold', 'italicAlertMetric': ctrl.panel.fontFormat === 'Italic'} " ng-if="ctrl.statusMetrics.length > 0">
+					   <img src="https://hds.static.autodesk.com/images/table-status-good.svg" alt="Good">
+					   <a ng-if="ctrl.statusMetrics[0].group.alias" ng-href="{{ ctrl.statusMetrics[0].group.url | interpolateTemplateVars:this }}" target="_blank" >{{ ctrl.formatAlias(ctrl.statusMetrics[0].group.alias, ctrl.statusMetrics.length) }}</a>
+					   <a ng-if="!ctrl.statusMetrics[0].group.alias" ng-href="{{ ctrl.statusMetrics[0].group.url | interpolateTemplateVars:this }}" target="_blank" >{{ ctrl.statusMetrics.length }} {{ ctrl.statusMetrics[0].group.name }} ok</a>
+					</div>
 
 					<div ng-style="ctrl.panel.colorMode === 'Metric' && {'color':ctrl.panel.colors.crit}"
 						ng-class="{'boldAlertMetric': ctrl.panel.fontFormat === 'Bold', 'italicAlertMetric': ctrl.panel.fontFormat === 'Italic'}" ng-repeat="(group, metrics) in ctrl.groupCrit">
@@ -76,20 +82,6 @@
 						<a ng-if="metrics.length > 0 && metrics[0].group.url && !metrics[0].group.alias" ng-href="{{ metrics[0].group.url | interpolateTemplateVars:this }}" target="_blank">{{ metrics.length }}: {{ metrics[0].group.name }}</a>
 						<a ng-if="metrics.length > 0 && !metrics[0].group.url && !metrics[0].group.alias" ng-href="{{ ctrl.warn[0].url | interpolateTemplateVars:this }}" target="_blank">{{ metrics.length }}: {{ metrics[0].group.name }}</a>
 			   		</div>
-
-					<!-- <div ng-style="ctrl.panel.colorMode === 'Metric' && {'color':ctrl.panel.colors.crit}"
-						ng-class="{'boldAlertMetric': ctrl.panel.fontFormat === 'Bold', 'italicAlertMetric': ctrl.panel.fontFormat === 'Italic'}">
-						<img ng-show="ctrl.crit.length > 0" alt="critical" src="https://hds.static.autodesk.com/images/table-status-worst.svg">
-						<a ng-show="ctrl.crit.length > 0 && !ctrl.panel.criticalAlias" ng-href="{{ ctrl.crit[0].url | interpolateTemplateVars:this }}" target="_blank" >Critical: {{ ctrl.crit.length }}</a>
-						<a ng-show="ctrl.crit.length > 0 && ctrl.panel.criticalAlias" ng-href="{{ ctrl.crit[0].url | interpolateTemplateVars:this }}" target="_blank" >Critical: {{ ctrl.crit.length }} {{ ctrl.panel.criticalAlias }}</a>
-			   		</div>
-
-					<div ng-style="ctrl.panel.colorMode === 'Metric' && {'color':ctrl.panel.colors.warn}"
-						ng-class="{'boldAlertMetric': ctrl.panel.fontFormat === 'Bold', 'italicAlertMetric': ctrl.panel.fontFormat === 'Italic'}">
-						<img ng-show="ctrl.warn.length > 0" alt="degraded" src="https://hds.static.autodesk.com/images/table-status-bad.svg">
-						<a ng-show="ctrl.warn.length > 0 && !ctrl.panel.warningAlias" ng-href="{{ ctrl.warn[0].url | interpolateTemplateVars:this }}" target="_blank">Warning: {{ ctrl.warn.length }}</a>
-						<a ng-show="ctrl.warn.length > 0 && ctrl.panel.warningAlias" ng-href="{{ ctrl.crit[0].url | interpolateTemplateVars:this }}" target="_blank" >Warning: {{ ctrl.warn.length }} {{ ctrl.panel.warningAlias }}</a>
-			   		</div> -->
 
 					<div ng-style="ctrl.panel.colorMode === 'Metric' && {'color':ctrl.panel.colors.disable}"
 						 ng-class="{'boldAlertMetric': ctrl.panel.fontFormat === 'Bold', 'italicAlertMetric': ctrl.panel.fontFormat === 'Italic'}"

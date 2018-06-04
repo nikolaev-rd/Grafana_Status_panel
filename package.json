@@ -1,11 +1,11 @@
 {
-  "name": "vonage-status-panel",
+  "name": "blackmirror1-statusbygroup-panel",
   "private": true,
-  "version": "1.0.8",
+  "version": "1.1.0",
   "description": "",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/Vonage/Grafana_Status_panel.git"
+    "url": "git+https://github.com/black-mirror-1/Grafana_Status_panel.git"
   },
   "author": "",
   "license": "ISC",

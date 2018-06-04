@@ -43,22 +43,6 @@
 			</span>
 			<input type="number" ng-model="ctrl.panel.cornerRadius" class="gf-form-input max-width-12" ng-change="ctrl.onRender()">
 		</div>
-		<div class="gf-form">
-			<span class="gf-form-label width-12">
-					Status Metric
-					<info-popover mode="right-normal">
-						The alias of the metric which will determine the status color of the entire panel.
-					</info-popover>
-				</span>
-			<div class="gf-form-select-wrapper max-width-12">
-				<select class="gf-form-input"
-						ng-init="ctrl.panel.statusMetric = (ctrl.panel.statusMetric ? ctrl.panel.statusMetric : ctrl.statusMetrics[0])"
-						ng-model="ctrl.panel.statusMetric"
-						ng-options="m for m in ctrl.statusMetrics"
-						ng-change="ctrl.onRender()"
-						required></select>
-			</div>
-		</div>
 	</div>
 
 	<!--Flip card section-->
@@ -125,15 +109,6 @@
 				<color-picker color="ctrl.panel.colors.disable" bs-tooltip="'Disabled'" onChange="ctrl.onColorChange('disable')"></color-picker>
 			</span>
 		</div>
-		<div class="gf-form">
-			<span class="gf-form-label width-9">Warning Alias</span>
-			<input type="text" ng-model="ctrl.panel.warningAlias" class="gf-form-input max-width-12" ng-change="ctrl.onRender()">
-		</div>
-
-		<div class="gf-form">
-			<span class="gf-form-label width-9">Critical Alias</span>
-			<input type="text" ng-model="ctrl.panel.criticalAlias" class="gf-form-input max-width-12" ng-change="ctrl.onRender()">
-		</div>
 	</div>
 
 	<!--Other Option-->
@@ -161,9 +136,12 @@
 	<div class="section gf-form-group">
 		<h5 class="section-heading">Groups</h5>
 			<div class="gf-form" ng-repeat="group in ctrl.panel.statusGroups">
-				<label class="gf-form-label">
-					<i class="pointer fa fa-remove" ng-click="ctrl.removeGroup(group)"></i>
+				<label class="gf-form-label width-12">
+					<i ng-if="!(group === ctrl.panel.statusGroups[0])" class="pointer fa fa-remove" ng-click="ctrl.removeGroup(group)"></i>
 					<span>{{ group.name }}</span>
+					<info-popover ng-if="group === ctrl.panel.statusGroups[0]" mode="right-normal">
+						Metrics in the Status Checks Group will determine the color of the panel.
+					</info-popover>
 				</label>
 				<input type="text" placeholder="Alias" ng-model="group.alias" ng-init="group.alias" class="gf-form-input max-width-12" ng-change="ctrl.onRender()">
 				<input type="text" placeholder="Drill down URL" ng-model="group.url" ng-init="group.url" class="gf-form-input max-width-12" ng-change="ctrl.onRender()">
