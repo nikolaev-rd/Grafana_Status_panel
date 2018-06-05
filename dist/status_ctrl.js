@@ -108,7 +108,6 @@ System.register(["app/plugins/sdk", "lodash", "app/core/time_series2", "app/core
 					_this.colorModes = ['Panel', 'Metric', 'Disabled'];
 					_this.fontFormats = ['Regular', 'Bold', 'Italic'];
 					_this.statusMetrics = [];
-					// this.panel.statusGroups = [];
 
 					//Push the default status check group
 					if (!_this.panel.statusGroups) {
