@@ -729,8 +729,8 @@ export class StatusPluginCtrl extends MetricsPanelCtrl {
 		this.render();
 	}
 
-	formatAlias(text, token){
-		return text.replace('{}', token);
+	formatAlias(text, count, status){
+		return text.replace('{c}', count).replace('{s}', status);
 	}
 }
 

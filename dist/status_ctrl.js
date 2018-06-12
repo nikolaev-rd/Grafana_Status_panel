@@ -796,8 +796,8 @@ System.register(["app/plugins/sdk", "lodash", "app/core/time_series2", "app/core
 					}
 				}, {
 					key: "formatAlias",
-					value: function formatAlias(text, token) {
-						return text.replace('{}', token);
+					value: function formatAlias(text, count, status) {
+						return text.replace('{c}', count).replace('{s}', status);
 					}
 				}], [{
 					key: "parseThresholds",
