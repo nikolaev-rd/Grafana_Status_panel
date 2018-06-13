@@ -46,9 +46,9 @@ You can also repeat the panel on a template if you have multiple instances that 
 ### Set Status Metric
 Under panel options you can select a metric from the list that will determine the status of the entire panel. The other metrics will be group based on their state and will still display but their state will not change the status of the panel. 
 
-### Version 1.0.0 - What's new?
-* Adding support for status metric:
-	- Added option to choose one metric that determines the overall status of the panel.
+### Version 1.1.2 - What's new?
+* Add support to replace values in alias with status state and count of metrics breaching
+	* Use {c} in alias for count and {s} for status
 
 # Screenshots
 ### Panel States
