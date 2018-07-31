@@ -4,6 +4,8 @@ import TimeSeries from "app/core/time_series2";
 import coreModule from "app/core/core_module";
 import kbn from "app/core/utils/kbn";
 import moment from "moment";
+import 'jquery.flot';
+import 'jquery.flot.pie';
 
 import './css/status_panel.css!';
 
@@ -11,6 +13,7 @@ import './css/status_panel.css!';
 const panelDefaults = {
 	flipCard: false,
 	flipTime: 5,
+	panelShape: 'Rectangle',
 	colorMode: 'Panel',
 	// Changed colors to match Table Panel so colorised text is easier to read
 	colors: {
@@ -43,6 +46,7 @@ export class StatusPluginCtrl extends MetricsPanelCtrl {
 		this.colorModes = ['Panel', 'Metric', 'Disabled'];
 		this.fontFormats = ['Regular', 'Bold', 'Italic'];
 		this.statusMetrics = [];
+		this.panelShapes = ['Rectangle', 'Ellipse', 'Circle'];
 
 		//Push the default status check group
 		if(!this.panel.statusGroups) {
@@ -372,7 +376,7 @@ export class StatusPluginCtrl extends MetricsPanelCtrl {
 						target.valueHandler = "Text Only"
 					}
 				} else {
-					target.valueHandler = this.valueHandlers[0]
+					target.valueHandler = this.valueHandlers[0];
 				}
 				target.displayType = this.displayTypes[0];
 			}
@@ -395,7 +399,7 @@ export class StatusPluginCtrl extends MetricsPanelCtrl {
 					target.crit = Number(target.crit);
 					target.warn = Number(target.warn);
 				} else {
-					target.valueHandler = "String Threshold"
+					target.valueHandler = "String Threshold";
 					if (typeof target.crit != "undefined") target.crit = String(target.crit);
 					if (typeof target.warn != "undefined") target.warn = String(target.warn);
 				}
@@ -558,12 +562,42 @@ export class StatusPluginCtrl extends MetricsPanelCtrl {
 		}
 	}
 
+	hideAllWarnings() {
+		for (var i = span.length; i--;) {
+			span[i].className = 'NameHighlights'; 
+		}
+	};
+
 	handleCssDisplay() {
 		this.$panelContainer.removeClass('error-state warn-state disabled-state ok-state no-data-state');
 		this.$panelContainer.addClass(this.panelState);
 
-		let radius = _.isNumber(this.panel.cornerRadius) ? this.panel.cornerRadius : 0
-		this.$panelContainer.css('border-radius', radius + '%');
+		var height = this.$panelContainer.find('.status-panel').height();
+
+		if (this.panel.panelShape === 'Rectangle') {
+			this.$panelContainer.css('border-radius', 0 + '%');
+			this.$panelContainer.css('width', '');
+			this.$panelContainer.css('max-width', '');
+			this.$panelContainer.css('height', '');
+			this.$panelContainer.css('margin', '');
+			this.$panelContainer.css('max-height', '');
+			this.$panelContainer.css('padding-bottom', '');
+			this.$panelContainer.find('.bottom-section').css('height', '');
+		} else if(this.panel.panelShape === 'Ellipse') {
+			this.$panelContainer.css('border-radius', 50 + '%');
+			this.$panelContainer.css('width', '');
+			this.$panelContainer.css('max-width', '');
+			this.$panelContainer.css('height', '');
+			this.$panelContainer.css('margin', '');
+			this.$panelContainer.css('max-height', '');
+			this.$panelContainer.css('padding-bottom', '');
+			this.$panelContainer.find('.bottom-section').css('height', '');
+		} else if(this.panel.panelShape === 'Circle') {
+			this.$panelContainer.css('border-radius', 50 + '%');
+			this.$panelContainer.css('height', height + 'px');
+			this.$panelContainer.css('width', height + 'px');
+			this.$panelContainer.css('margin', 'auto');
+		}
 
 		let okColor = (this.panel.isIgnoreOKColors) ? '' : this.panel.colors.ok;
 
@@ -579,6 +613,7 @@ export class StatusPluginCtrl extends MetricsPanelCtrl {
 			this.$panelContainer.css('background-color', '');
 		}
 	}
+
 
 	handleMaxAlertsToShow() {
 		if(this.panel.maxAlertNumber != null && this.panel.maxAlertNumber >= 0) {
