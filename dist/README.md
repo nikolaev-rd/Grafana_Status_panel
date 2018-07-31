@@ -46,9 +46,18 @@ You can also repeat the panel on a template if you have multiple instances that 
 ### Set Status Metric
 Under panel options you can select a metric from the list that will determine the status of the entire panel. The other metrics will be group based on their state and will still display but their state will not change the status of the panel. 
 
-### Version 1.1.2 - What's new?
+
+
+## Version History - What's new?
+#### 1.1.3
+* Panel shape can now be changed from rectangle to ellipse and circle. [8161295](https://github.com/black-mirror-1/Grafana_Status_panel/commit/8161295547588b69a0e0dab9cdb2d869b72bf7a7) 
+
+##### 1.1.2
 * Add support to replace values in alias with status state and count of metrics breaching
 	* Use {c} in alias for count and {s} for status
+
+
+
 
 # Screenshots
 ### Panel States
