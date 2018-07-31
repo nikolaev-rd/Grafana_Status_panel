@@ -1,4 +1,5 @@
 ﻿<div class="status-panel">
+	<div class="circle__chart"></div>
 	<div ng-show="ctrl.duplicates">
 		<strong>Error</strong>: There are multiple measurements with the same alias. Please give each measurement a unique name.
 	</div>
@@ -11,7 +12,9 @@
 		<div class="disabled-text" ng-style="ctrl.panel.colorMode === 'Metric' && {'color':ctrl.panel.colors.disable}">Disabled</div>
 	</div>
 	<div class="st-card-back" ng-hide="ctrl.duplicates" ng-style="{ 'min-height': ctrl.minHeight }">
-
+		<span class="NameHighlights">
+			<a href="product link is here"></a>
+		</span>
 		<div class="top_section">
 			<div class="status-panel-annotation_row" ng-if="ctrl.annotation.length > 0" ng-style="ctrl.panel.colorMode === 'Metric' && !ctrl.panel.isIgnoreOKColors && {'color':ctrl.panel.colors.ok}">
 				<div ng-repeat="annotation in ctrl.annotation" >

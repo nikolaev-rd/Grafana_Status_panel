@@ -34,14 +34,19 @@
 		</div>
 		<div class="gf-form">
 			<span class="gf-form-label width-12">
-				Corner Radius (%)
-				<info-popover mode="right-normal">
-					The corner radius to apply the panel.<br>
-					Values can be between 0% - 50%.<br>
-					0% for rectangle, 50% for circle / ellipse
-				</info-popover>
+			  Panel Shape
+			  <info-popover mode="right-normal">
+				Rectangle panels, ellipse panels, and circle panels for different design templates.
+			  </info-popover>
 			</span>
-			<input type="number" ng-model="ctrl.panel.cornerRadius" class="gf-form-input max-width-12" ng-change="ctrl.onRender()">
+			<div class="gf-form-select-wrapper max-width-12">
+				<select class="gf-form-input"
+						ng-init="ctrl.panel.panelShape = (ctrl.panel.panelShape ? ctrl.panel.panelShape : ctrl.panelShapes[0])"
+						ng-model="ctrl.panel.panelShape"
+						ng-options="t for t in ctrl.panelShapes"
+						ng-change="ctrl.onRender()"
+						required></select>
+			</div>
 		</div>
 	</div>
 

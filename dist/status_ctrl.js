@@ -1,6 +1,6 @@
 "use strict";
 
-System.register(["app/plugins/sdk", "lodash", "app/core/time_series2", "app/core/core_module", "app/core/utils/kbn", "moment", "./css/status_panel.css!"], function (_export, _context) {
+System.register(["app/plugins/sdk", "lodash", "app/core/time_series2", "app/core/core_module", "app/core/utils/kbn", "moment", "jquery.flot", "jquery.flot.pie", "./css/status_panel.css!"], function (_export, _context) {
 	"use strict";
 
 	var MetricsPanelCtrl, _, TimeSeries, coreModule, kbn, moment, _createClass, panelDefaults, StatusPluginCtrl;
@@ -48,7 +48,7 @@ System.register(["app/plugins/sdk", "lodash", "app/core/time_series2", "app/core
 			kbn = _appCoreUtilsKbn.default;
 		}, function (_moment) {
 			moment = _moment.default;
-		}, function (_cssStatus_panelCss) {}],
+		}, function (_jqueryFlot) {}, function (_jqueryFlotPie) {}, function (_cssStatus_panelCss) {}],
 		execute: function () {
 			_createClass = function () {
 				function defineProperties(target, props) {
@@ -71,6 +71,7 @@ System.register(["app/plugins/sdk", "lodash", "app/core/time_series2", "app/core
 			panelDefaults = {
 				flipCard: false,
 				flipTime: 5,
+				panelShape: 'Rectangle',
 				colorMode: 'Panel',
 				// Changed colors to match Table Panel so colorised text is easier to read
 				colors: {
@@ -108,6 +109,7 @@ System.register(["app/plugins/sdk", "lodash", "app/core/time_series2", "app/core
 					_this.colorModes = ['Panel', 'Metric', 'Disabled'];
 					_this.fontFormats = ['Regular', 'Bold', 'Italic'];
 					_this.statusMetrics = [];
+					_this.panelShapes = ['Rectangle', 'Ellipse', 'Circle'];
 
 					//Push the default status check group
 					if (!_this.panel.statusGroups) {
@@ -649,13 +651,44 @@ System.register(["app/plugins/sdk", "lodash", "app/core/time_series2", "app/core
 						}
 					}
 				}, {
+					key: "hideAllWarnings",
+					value: function hideAllWarnings() {
+						for (var i = span.length; i--;) {
+							span[i].className = 'NameHighlights';
+						}
+					}
+				}, {
 					key: "handleCssDisplay",
 					value: function handleCssDisplay() {
 						this.$panelContainer.removeClass('error-state warn-state disabled-state ok-state no-data-state');
 						this.$panelContainer.addClass(this.panelState);
 
-						var radius = _.isNumber(this.panel.cornerRadius) ? this.panel.cornerRadius : 0;
-						this.$panelContainer.css('border-radius', radius + '%');
+						var height = this.$panelContainer.find('.status-panel').height();
+
+						if (this.panel.panelShape === 'Rectangle') {
+							this.$panelContainer.css('border-radius', 0 + '%');
+							this.$panelContainer.css('width', '');
+							this.$panelContainer.css('max-width', '');
+							this.$panelContainer.css('height', '');
+							this.$panelContainer.css('margin', '');
+							this.$panelContainer.css('max-height', '');
+							this.$panelContainer.css('padding-bottom', '');
+							this.$panelContainer.find('.bottom-section').css('height', '');
+						} else if (this.panel.panelShape === 'Ellipse') {
+							this.$panelContainer.css('border-radius', 50 + '%');
+							this.$panelContainer.css('width', '');
+							this.$panelContainer.css('max-width', '');
+							this.$panelContainer.css('height', '');
+							this.$panelContainer.css('margin', '');
+							this.$panelContainer.css('max-height', '');
+							this.$panelContainer.css('padding-bottom', '');
+							this.$panelContainer.find('.bottom-section').css('height', '');
+						} else if (this.panel.panelShape === 'Circle') {
+							this.$panelContainer.css('border-radius', 50 + '%');
+							this.$panelContainer.css('height', height + 'px');
+							this.$panelContainer.css('width', height + 'px');
+							this.$panelContainer.css('margin', 'auto');
+						}
 
 						var okColor = this.panel.isIgnoreOKColors ? '' : this.panel.colors.ok;
 
