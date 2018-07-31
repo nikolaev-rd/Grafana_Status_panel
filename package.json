@@ -29,6 +29,6 @@
     "grunt-contrib-sass": "^1.0.0",
     "grunt-sass": "2.1.0",
     "lodash": "^4.17.10",
-    "node-sass": "^4.9.0"
+    "node-sass": "^4.9.2"
   }
 }
